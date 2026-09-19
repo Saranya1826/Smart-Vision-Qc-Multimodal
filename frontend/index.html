@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartVisionOC: Explainable Multi-Modal AI Framework for Zero-Shot Industrial Quality Inspection</title>
+  
+  <!-- Inter & JetBrains Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body>
+
+<div class="app-container">
+  <!-- =========================================================================
+       HEADER
+       ========================================================================= -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="2" x2="12" y2="6"></line>
+          <line x1="12" y1="18" x2="12" y2="22"></line>
+          <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+          <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+          <line x1="2" y1="12" x2="6" y2="12"></line>
+          <line x1="18" y1="12" x2="22" y2="12"></line>
+          <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+          <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-title">SmartVisionOC</div>
+        <div class="brand-subtitle">Explainable Multi-Modal AI Framework</div>
+      </div>
+    </div>
+
+    <!-- System Status Indicator -->
+    <div class="header-status-badge" title="Optical Metrology AI Inference Engine Active">
+      <div class="pulse-dot"></div>
+      <span>SYSTEM STATUS: AI INFERENCE READY</span>
+    </div>
+
+    <div class="header-actions">
+      <button id="runInspectionBtn" class="btn btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        <span>Run Inspection (Space)</span>
+      </button>
+      <button id="viewReportHeaderBtn" class="btn" onclick="window.app.openReport()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <span>Report</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="app-body">
+    <!-- =========================================================================
+         LEFT SIDEBAR
+         ========================================================================= -->
+    <aside class="left-sidebar">
+      <ul class="sidebar-nav">
+        <li class="nav-item active" id="navDashboard">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <span>Dashboard</span>
+        </li>
+        <li class="nav-item" id="navNewInspection">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+          <span>New Inspection</span>
+        </li>
+        <li class="nav-item" id="navHistory">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Inspection History</span>
+        </li>
+        <li class="nav-item" id="navReports">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          <span>Reports</span>
+        </li>
+        <li class="nav-item" id="navSettings">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Settings</span>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="font-mono">Part: ANSI B16.5 CL300</div>
+        <div>Workstation: AOI-METRO-04</div>
+        <div style="margin-top: 4px; color: #38bdf8;">v0.1.0-prototype</div>
+      </div>
+    </aside>
+
+    <!-- =========================================================================
+         MAIN DASHBOARD
+         ========================================================================= -->
+    <main class="main-dashboard">
+      
+      <!-- Primary Decision Banner (Section 9 Preview Header) -->
+      <div id="decisionBanner" class="decision-banner reject">
+        <div>
+          <div style="font-size: 11px; text-transform: uppercase; font-family: var(--font-mono); letter-spacing: 1.5px; opacity: 0.9;">
+            STAGE 9: DECISION ENGINE STATUS
+          </div>
+          <div id="decisionStateText" class="decision-state-title">REJECT</div>
+          <div id="decisionReasonText" style="font-size: 12px; margin-top: 2px; opacity: 0.95;">
+            High risk score exceeds threshold. Severe crack poses structural integrity hazard.
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 11px; font-family: var(--font-mono); text-transform: uppercase; opacity: 0.8;">WEIGHTED RISK</div>
+          <div id="s8RiskValue" style="font-size: 36px; font-weight: 800; font-family: var(--font-mono);">0.88</div>
+          <div id="s8RiskLevel" class="stage-badge" style="background-color: rgba(0,0,0,0.4); border-color: currentColor;">CRITICAL</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        
+        <!-- =====================================================================
+             COLUMN 1: SECTIONS 1, 2, 6 (ACQUISITION, PREPROCESSING, OPERATOR INPUT)
+             ===================================================================== -->
+        <div class="dashboard-column">
+          
+          <!-- SECTION 1: IMAGE ACQUISITION -->
+          <section class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                <span>1. Image Acquisition</span>
+              </div>
+              <span class="stage-badge">STAGE 01</span>
+            </div>
+
+            <!-- Upload Button & Camera Placeholder -->
+            <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+              <input type="file" id="imageFileInput" accept=".png,.jpg,.jpeg,.bmp,.webp,image/png,image/jpeg,image/bmp,image/webp" style="display: none;" />
+              <button class="btn btn-sm" style="flex: 1;" onclick="document.getElementById('imageFileInput').click()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <span>Upload Image</span>
+              </button>
+              <button id="openCameraBtn" class="btn btn-sm" style="flex: 1;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                <span>Camera Capture</span>
+              </button>
+            </div>
+
+            <!-- Drag and Drop Area -->
+            <div id="imageDropzone" class="dropzone">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" style="margin-bottom: 6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <div style="font-size: 11px; color: var(--text-secondary);">Drag & Drop Industrial Component Image</div>
+              <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">PNG, JPG, JPEG, BMP, WEBP up to 25MB</div>
+            </div>
+
+            <!-- Image Preview Box -->
+            <div style="margin-top: 12px; display: flex; gap: 10px; align-items: center; background-color: var(--bg-elevated); padding: 8px; border-radius: 6px; border: 1px solid var(--border-subdued);">
+              <img id="previewRawThumb" src="" alt="Acquisition Preview" style="width: 52px; height: 52px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-medium);" />
+              <div style="flex: 1; overflow: hidden;">
+                <div style="font-size: 10px; text-transform: uppercase; color: var(--text-muted);">Optical Capture Telemetry</div>
+                <div id="s1Meta" class="font-mono" style="font-size: 11px; color: #ffffff; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">1024x1024 px | 512 KB</div>
+                <div class="font-mono" style="font-size: 10px; color: #10b981;">SENSOR LINK: ONLINE</div>
+              </div>
+            </div>
+
+            <!-- Preset Specimens -->
+            <div style="margin-top: 12px;">
+              <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Preset Flange Specimens</div>
+              <div id="specimenPresetsContainer" class="specimen-pill-grid">
+                <!-- Dynamically injected -->
+              </div>
+            </div>
+          </section>
+
+          <!-- SECTION 2: PREPROCESSING -->
+          <section class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                <span>2. Preprocessing</span>
+              </div>
+              <span class="stage-badge">STAGE 02</span>
+            </div>
+
+            <!-- Comparison Grid: Original vs Enhanced Image -->
+            <div class="comparison-grid">
+              <div class="preview-box">
+                <div class="preview-box-label">Original Image</div>
+                <img id="s2OriginalThumb" src="" alt="Original" class="preview-img" />
+              </div>
+              <div class="preview-box">
+                <div class="preview-box-label">Enhanced (CLAHE)</div>
+                <img id="s2EnhancedThumb" src="" alt="Enhanced" class="preview-img" />
+              </div>
+            </div>
+
+            <!-- Quality Check & Metrics -->
+            <div style="background-color: var(--bg-elevated); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-subdued); margin-bottom: 8px;">
+              <div style="font-size: 10px; text-transform: uppercase; color: var(--text-muted);">Quality Check Status</div>
+              <div id="s2QualityBadge" style="font-weight: 600; font-size: 12px; color: #34d399; margin-top: 2px;">PASSED (Optimal Industrial Inspection Grade)</div>
+            </div>
+
+            <div class="quality-metric-row">
+              <span style="color: var(--text-secondary);">Focus (Laplacian Variance)</span>
+              <span id="s2FocusVal" class="font-mono text-cyan">---</span>
+            </div>
+            <div class="quality-metric-row">
+              <span style="color: var(--text-secondary);">Brightness (Luminance)</span>
+              <span id="s2BrightnessVal" class="font-mono">---</span>
+            </div>
+            <div class="quality-metric-row">
+              <span style="color: var(--text-secondary);">Contrast (RMS Std Dev)</span>
+              <span id="s2ContrastVal" class="font-mono">---</span>
+            </div>
+            <div class="quality-metric-row" style="border-bottom: none;">
+              <span style="color: var(--text-secondary);">Noise Level (SNR)</span>
+              <span id="s2NoiseVal" class="font-mono text-amber">---</span>
+            </div>
+          </section>
+
+          <!-- SECTION 6: OPERATOR INPUT -->
+          <section class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>6. Operator Input</span>
+              </div>
+              <span class="stage-badge">STAGE 06</span>
+            </div>
+
+            <!-- Text Input -->
+            <div style="margin-bottom: 8px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <label style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">Shop-Floor Notes</label>
+                <!-- Voice Input Button -->
+                <button id="voiceRecordBtn" class="btn btn-sm" style="padding: 3px 8px;" title="Record operator speech">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                  <span>Voice Mic</span>
+                </button>
+              </div>
+              <textarea id="operatorNotesInput" rows="2" style="width: 100%; background-color: var(--bg-elevated); border: 1px solid var(--border-medium); border-radius: 6px; padding: 8px; color: #ffffff; font-size: 12px; font-family: var(--font-sans); resize: vertical;" placeholder="Enter operator observations (e.g. abnormal lathe chatter, tool wear)..."></textarea>
+              <div id="voiceStatus" style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Voice input idle.</div>
+            </div>
+
+            <!-- Structured Observations -->
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 10px;">
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; cursor: pointer;">
+                <input type="checkbox" id="flagToolWear" />
+                <span>Tool Wear Alert (End of Tool Life)</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; cursor: pointer;">
+                <input type="checkbox" id="flagCriticalSeal" checked />
+                <span>Critical Sealing Surface (High Tolerance)</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; cursor: pointer;">
+                <input type="checkbox" id="flagQuenching" />
+                <span>Upstream Heat-Treatment / Quenching Anomaly</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; cursor: pointer;">
+                <input type="checkbox" id="flagBatchRecheck" />
+                <span>Secondary Lot Inspection Mandated</span>
+              </label>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- =====================================================================
+             COLUMN 2: CENTRAL WORKSTATION CANVAS & SECTIONS 3, 4, 5
+             ===================================================================== -->
+        <div class="dashboard-column">
+          
+          <!-- Central Multi-Layer Interactive Canvas Viewer -->
+          <div class="canvas-workstation">
+            <div class="canvas-toolbar">
+              <div class="view-mode-tabs">
+                <button class="tab-btn active" data-mode="composite">Composite</button>
+                <button class="tab-btn" data-mode="quad">Quad (2x2)</button>
+                <button class="tab-btn" data-mode="raw">Raw</button>
+                <button class="tab-btn" data-mode="clahe">CLAHE</button>
+                <button class="tab-btn" data-mode="heatmap">Heatmap</button>
+                <button class="tab-btn" data-mode="sam">SAM 2</button>
+                <button class="tab-btn" data-mode="depth">Depth</button>
+              </div>
+
+              <div class="alpha-control">
+                <span style="font-size: 11px; color: var(--text-secondary);">Layer Alpha:</span>
+                <input type="range" id="alphaSlider" min="0" max="1" step="0.05" value="0.65" style="width: 80px; accent-color: #38bdf8;" />
+                <span id="alphaDisplay" class="font-mono text-cyan" style="font-size: 11px; min-width: 32px;">65%</span>
+              </div>
+            </div>
+
+            <!-- Canvas Viewport -->
+            <div class="canvas-container">
+              <canvas id="inspectionCanvas" width="1024" height="1024"></canvas>
+            </div>
+
+            <div class="canvas-footer">
+              <div id="coordDisplay">X: --- px | Y: --- px</div>
+              <div>METRO-RETICLE: ACTIVE | SCALE: 1.0x</div>
+            </div>
+          </div>
+
+          <!-- SECTIONS 3, 4, 5 TABBED / STACKED CARDS -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 18px;">
+            
+            <!-- SECTION 3: DEFECT IDENTIFICATION -->
+            <section class="section-card" style="margin-bottom: 0;">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  <span>3. Defect ID</span>
+                </div>
+                <span id="s3StageBadge" class="stage-badge">CLIP: FALLBACK</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                <span id="s3PredictedDefect" style="font-size: 16px; font-weight: 700; color: #f97316;">---</span>
+                <span id="s3ClipConfidence" class="font-mono text-cyan" style="font-size: 14px; font-weight: 700;">---%</span>
+              </div>
+
+              <!-- Heatmap Preview Thumbnail -->
+              <div class="preview-box" style="margin-bottom: 10px;">
+                <div class="preview-box-label">CLIP 2D Heatmap Overlay</div>
+                <img id="s3HeatmapThumb" src="" alt="Heatmap" class="preview-img" style="aspect-ratio: 16/9; max-height: 80px;" />
+              </div>
+
+              <!-- Candidate Defect Types & Similarity Scores -->
+              <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Zero-Shot Similarity Spectrum</div>
+              <div id="s3ConfidenceBars" class="confidence-bar-group">
+                <!-- Injected dynamically -->
+              </div>
+            </section>
+
+            <!-- SECTION 4: SEGMENTATION -->
+            <section class="section-card" style="margin-bottom: 0;">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                  <span>4. Segmentation</span>
+                </div>
+                <span id="s4StageBadge" class="stage-badge">SAM 2: FALLBACK</span>
+              </div>
+
+              <!-- Mask Preview Thumbnail -->
+              <div class="preview-box" style="margin-bottom: 10px;">
+                <div class="preview-box-label">SAM 2 Pixel Mask</div>
+                <img id="s4MaskThumb" src="" alt="SAM 2 Mask" class="preview-img" style="aspect-ratio: 16/9; max-height: 80px;" />
+              </div>
+
+              <div class="quality-metric-row">
+                <span style="color: var(--text-secondary);">Defect Area</span>
+                <span id="s4DefectArea" class="font-mono text-cyan">---</span>
+              </div>
+              <div class="quality-metric-row">
+                <span style="color: var(--text-secondary);">Bounding Box</span>
+                <span id="s4BoundingBox" class="font-mono" style="font-size: 10px;">---</span>
+              </div>
+              <div class="quality-metric-row">
+                <span style="color: var(--text-secondary);">Centroid (X,Y)</span>
+                <span id="s4Centroid" class="font-mono">---</span>
+              </div>
+              <div class="quality-metric-row" style="border-bottom: none;">
+                <span style="color: var(--text-secondary);">SAM Confidence</span>
+                <span id="s4SamConfidence" class="font-mono text-pass">---%</span>
+              </div>
+            </section>
+
+            <!-- SECTION 5: SPATIAL ANALYSIS -->
+            <section class="section-card" style="margin-bottom: 0;">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                  <span>5. Spatial Depth</span>
+                </div>
+                <span id="s5StageBadge" class="stage-badge">DEPTH: FALLBACK</span>
+              </div>
+
+              <!-- Depth Map Preview Thumbnail -->
+              <div class="preview-box" style="margin-bottom: 10px;">
+                <div class="preview-box-label">Relative Depth Map</div>
+                <img id="s5DepthThumb" src="" alt="Depth Map" class="preview-img" style="aspect-ratio: 16/9; max-height: 80px;" />
+              </div>
+
+              <div class="quality-metric-row">
+                <span style="color: var(--text-secondary);">Relative Depth (&Delta;z)</span>
+                <span id="s5RelativeDepth" class="font-mono text-amber">--- mm</span>
+              </div>
+              <div class="quality-metric-row">
+                <span style="color: var(--text-secondary);">Surface Profile</span>
+                <span id="s5SurfaceProfile" class="font-mono text-purple">---</span>
+              </div>
+              <div class="quality-metric-row" style="border-bottom: none;">
+                <span style="color: var(--text-secondary);">Location Descriptor</span>
+                <span id="s5Location" style="font-size: 10px; color: #ffffff; text-align: right; max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">---</span>
+              </div>
+            </section>
+
+          </div>
+
+        </div>
+
+        <!-- =====================================================================
+             COLUMN 3: SECTIONS 7, 8, 9, 10 (FUSION, RISK, REPORT)
+             ===================================================================== -->
+        <div class="dashboard-column telemetry-column">
+          
+          <!-- SECTION 7: EVIDENCE FUSION -->
+          <section class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h7"></path><path d="M7 12l5 5 10-10"></path></svg>
+                <span>7. Evidence Fusion</span>
+              </div>
+              <span class="stage-badge">STAGE 07</span>
+            </div>
+
+            <div class="quality-metric-row">
+              <span style="color: var(--text-secondary);">Visual Evidence (CLIP + SAM)</span>
+              <span id="s7VisualScore" class="font-mono text-cyan">---</span>
+            </div>
+            <div class="quality-metric-row">
+              <span style="color: var(--text-secondary);">Operator Context Evidence</span>
+              <span id="s7OperatorScore" class="font-mono">---</span>
+            </div>
+            <div class="quality-metric-row">
+              <span style="color: var(--text-secondary);">Evidence Agreement Score</span>
+              <span id="s7AgreementScore" class="font-mono text-pass">---%</span>
+            </div>
+            <div class="quality-metric-row" style="border-bottom: none;">
+              <span style="color: var(--text-secondary);">Combined Confidence</span>
+              <span id="s7CombinedConfidence" class="font-mono text-cyan" style="font-weight: 700;">---%</span>
+            </div>
+          </section>
+
+          <!-- SECTION 8: RISK SCORING -->
+          <section class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <span>8. Risk Scoring Breakdown</span>
+              </div>
+              <span class="stage-badge">STAGE 08</span>
+            </div>
+
+            <div class="quality-metric-row">
+              <span style="color: var(--text-secondary);">CLIP Confidence</span>
+              <span id="s8ClipScore" class="font-mono">---</span>
+            </div>
+            <div class="quality-metric-row">
+              <span style="color: var(--text-secondary);">SAM Confidence</span>
+              <span id="s8SamScore" class="font-mono">---</span>
+            </div>
+            <div class="quality-metric-row">
+              <span style="color: var(--text-secondary);">Defect Area Score</span>
+              <span id="s8AreaScore" class="font-mono text-cyan">---</span>
+            </div>
+            <div class="quality-metric-row">
+              <span style="color: var(--text-secondary);">Evidence Agreement</span>
+              <span id="s8AgreeScore" class="font-mono">---</span>
+            </div>
+            <div class="quality-metric-row">
+              <span style="color: var(--text-secondary);">Uncertainty Penalty</span>
+              <span id="s8UncertaintyPenalty" class="font-mono text-amber">---</span>
+            </div>
+
+            <!-- Weighted Risk Score Progress Bar -->
+            <div style="margin-top: 12px;">
+              <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
+                <span style="color: var(--text-secondary); text-transform: uppercase;">Calibrated Risk Meter</span>
+                <span class="font-mono" style="color: var(--text-muted);">&theta;pass: 0.25 | &theta;reject: 0.65</span>
+              </div>
+              <div class="progress-track" style="height: 10px;">
+                <div id="s8RiskBar" class="progress-fill top-defect" style="width: 88%;"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- SECTION 10: EXPLAINABLE INSPECTION REPORT PREVIEW -->
+          <section class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                <span>10. Inspection Report</span>
+              </div>
+              <button id="viewReportBtn" class="btn btn-sm" style="padding: 2px 8px;">View Full</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px; margin-bottom: 8px;">
+              <div>
+                <span style="color: var(--text-muted);">ID: </span>
+                <span id="reportInspectionId" class="font-mono text-cyan">---</span>
+              </div>
+              <div>
+                <span style="color: var(--text-muted);">Date: </span>
+                <span id="reportDate" class="font-mono" style="font-size: 10px;">---</span>
+              </div>
+              <div>
+                <span style="color: var(--text-muted);">Defect: </span>
+                <span id="reportDefectType" style="font-weight: 600; color: #f97316;">---</span>
+              </div>
+              <div>
+                <span style="color: var(--text-muted);">Area: </span>
+                <span id="reportArea" class="font-mono">---</span>
+              </div>
+              <div>
+                <span style="color: var(--text-muted);">Confidence: </span>
+                <span id="reportConfidence" class="font-mono">---</span>
+              </div>
+              <div>
+                <span style="color: var(--text-muted);">Decision: </span>
+                <span id="reportDecision" class="font-mono" style="font-weight: 700;">---</span>
+              </div>
+            </div>
+
+            <div style="font-size: 10px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px;">Causal Explanation:</div>
+            <div id="reportExplanation" style="background-color: var(--bg-elevated); border-left: 2px solid #38bdf8; padding: 6px 10px; font-size: 11px; color: #e2e8f0; margin-bottom: 8px; border-radius: 0 4px 4px 0; max-height: 80px; overflow-y: auto;">
+              ---
+            </div>
+
+            <div style="font-size: 10px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px;">Directive Recommendation:</div>
+            <div id="reportRecommendation" style="background-color: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.25); padding: 6px 10px; font-size: 11px; color: #38bdf8; border-radius: 4px;">
+              ---
+            </div>
+          </section>
+
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- =========================================================================
+     MODALS
+     ========================================================================= -->
+
+<!-- SECTION 10: FULL REPORT / PRINTABLE CERTIFICATE MODAL -->
+<div id="reportModal" class="modal-overlay">
+  <div class="modal-content" style="max-width: 900px;">
+    <div class="modal-body-container">
+      <!-- Injected by reportModal.js -->
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settingsModal" class="modal-overlay">
+  <div class="modal-content" style="max-width: 500px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-medium); padding-bottom: 12px; margin-bottom: 16px;">
+      <h3 style="font-size: 16px; font-weight: 700;">Inspection Framework Settings</h3>
+      <button id="closeSettingsBtn" class="btn btn-sm">Close</button>
+    </div>
+    
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div>
+        <label style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px;">Pass Threshold (&theta;pass)</label>
+        <input type="number" id="settingPassThreshold" min="0.05" max="0.50" step="0.05" value="0.25" style="width: 100%; background: var(--bg-elevated); border: 1px solid var(--border-medium); padding: 8px; border-radius: 6px; color: #fff;" />
+        <span style="font-size: 10px; color: var(--text-muted);">Risk scores below this threshold receive a PASS.</span>
+      </div>
+
+      <div>
+        <label style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px;">Reject Threshold (&theta;reject)</label>
+        <input type="number" id="settingRejectThreshold" min="0.50" max="0.95" step="0.05" value="0.65" style="width: 100%; background: var(--bg-elevated); border: 1px solid var(--border-medium); padding: 8px; border-radius: 6px; color: #fff;" />
+        <span style="font-size: 10px; color: var(--text-muted);">Risk scores at or above this threshold receive a REJECT.</span>
+      </div>
+
+      <div>
+        <label style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px;">CLAHE Clip Limit</label>
+        <input type="number" id="settingClaheClip" min="1.0" max="5.0" step="0.5" value="2.0" style="width: 100%; background: var(--bg-elevated); border: 1px solid var(--border-medium); padding: 8px; border-radius: 6px; color: #fff;" />
+      </div>
+
+      <div style="background-color: var(--bg-elevated); padding: 10px; border-radius: 6px; border: 1px solid var(--border-subdued); font-size: 11px; color: #fbbf24;">
+        <strong>AI Backend Status:</strong> Pluggable Mock Inference Engine active. To attach live PyTorch weights, set <code>AI_INFERENCE_MODE=TORCH_CUDA</code>.
+      </div>
+
+      <button id="saveSettingsBtn" class="btn btn-primary" style="margin-top: 10px; justify-content: center;">Save & Re-run Inspection</button>
+    </div>
+  </div>
+</div>
+
+<!-- CAMERA CAPTURE PLACEHOLDER MODAL -->
+<div id="cameraModal" class="modal-overlay">
+  <div class="modal-content" style="max-width: 540px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-medium); padding-bottom: 12px; margin-bottom: 16px;">
+      <h3 style="font-size: 16px; font-weight: 700;">Industrial Camera Stream</h3>
+      <button id="closeCameraModalBtn" class="btn btn-sm">Close</button>
+    </div>
+
+    <div style="position: relative; aspect-ratio: 4/3; background-color: #05070a; border: 1px solid var(--border-medium); border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+      <!-- Simulated Camera Reticle -->
+      <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0; pointer-events: none;">
+        <circle cx="50%" cy="50%" r="35%" fill="none" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1" stroke-dasharray="6,6"></circle>
+        <line x1="50%" y1="10%" x2="50%" y2="90%" stroke="rgba(56, 189, 248, 0.2)" stroke-width="1"></line>
+        <line x1="10%" y1="50%" x2="90%" y2="50%" stroke="rgba(56, 189, 248, 0.2)" stroke-width="1"></line>
+      </svg>
+      <div style="text-align: center; color: var(--text-muted); z-index: 2;">
+        <div class="pulse-dot" style="margin: 0 auto 8px auto;"></div>
+        <div style="font-family: var(--font-mono); font-size: 12px; color: #38bdf8;">GigE Vision Stream: Active (30 FPS)</div>
+        <div style="font-size: 11px;">Flange Centering Guide Active</div>
+      </div>
+    </div>
+
+    <button id="captureSimulatedCamBtn" class="btn btn-primary" style="width: 100%; justify-content: center;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+      <span>Capture Still Frame & Inspect</span>
+    </button>
+  </div>
+</div>
+
+<!-- INSPECTION HISTORY MODAL -->
+<div id="historyModal" class="modal-overlay">
+  <div class="modal-content" style="max-width: 650px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-medium); padding-bottom: 12px; margin-bottom: 16px;">
+      <h3 style="font-size: 16px; font-weight: 700;">Inspection Audit History</h3>
+      <button id="closeHistoryBtn" class="btn btn-sm">Close</button>
+    </div>
+    <div id="historyListContainer" style="max-height: 400px; overflow-y: auto;">
+      <!-- Injected dynamically -->
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/static/js/app.js"></script>
+</body>
+</html>
