@@ -1,4 +1,4 @@
-﻿# SmartVisionOC: Explainable Multi-Modal AI Framework for Zero-Shot Industrial Quality Inspection
+# SmartVisionOC: Explainable Multi-Modal AI Framework for Zero-Shot Industrial Quality Inspection
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg)](https://fastapi.tiangolo.com)
@@ -56,8 +56,20 @@ pip install -r requirements.txt
 pip install fastapi uvicorn pydantic opencv-python pillow numpy scipy
 ```
 
-### 3. Launching the Dashboard
-Start the local inspection server:
+### 3. Launching SmartVisionOC
+
+You can run SmartVisionOC in two modes:
+
+#### Option A: Native Windows Desktop App (Recommended)
+Launch the application as a standalone desktop app (without browser chrome or address bars) using Microsoft Edge Chromium WebView2:
+- **One-Click**: Double-click [`SmartVisionOC.bat`](file:///C:/Users/Hxtreme/Documents/paper_publication/Smart%20Vision%20Qc-Multimodal/SmartVisionOC.bat)
+- **Command Line**:
+  ```bash
+  python desktop.py
+  ```
+
+#### Option B: Web Browser Dashboard
+Start the local FastAPI inspection server and open in your favorite web browser:
 ```bash
 python run.py
 ```
